@@ -2,16 +2,19 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react-jsx",
+    "lib": ["es2020", "dom"],
+    "types": ["expo-env", "react", "react-native", "react-native-reanimated"],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/src/*": ["./src/*"],
+      "@/components": ["./src/components/index.ts"],
+      "@/stores": ["./src/stores/index.ts"],
+      "@/hooks": ["./src/hooks/index.ts"],
+      "@/services": ["./src/services/index.ts"],
+      "@/types": ["./src/types/index.ts"],
+      "@/utils": ["./src/utils/index.ts"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
