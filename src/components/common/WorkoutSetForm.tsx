@@ -1,5 +1,8 @@
 import { useTheme } from "@/src/theme";
-import React, { useState } from "react";
+import { workoutSetSchema, type WorkoutSetFields } from "@/src/utils/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
@@ -38,33 +41,23 @@ export const WorkoutSetForm: React.FC<WorkoutSetFormProps> = ({
 }) => {
   const { colors } = useTheme();
 
-  const [weight, setWeight] = useState(previousSet?.weight.toString() || "");
-  const [reps, setReps] = useState(previousSet?.reps.toString() || "");
-  const [rpe, setRpe] = useState(previousSet?.rpe?.toString() || "");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { control, handleSubmit, reset } = useForm<WorkoutSetFields>({
+    resolver: zodResolver(workoutSetSchema),
+    defaultValues: {
+      weight: previousSet?.weight.toString() ?? "",
+      reps: previousSet?.reps.toString() ?? "",
+      rpe: previousSet?.rpe?.toString() ?? "",
+    },
+  });
 
-  const handleSubmit = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!weight) newErrors.weight = "Weight is required";
-    if (!reps) newErrors.reps = "Reps are required";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
+  const handleFormSubmit = (data: WorkoutSetFields) => {
     onSubmit({
       setNumber,
-      weight: parseFloat(weight),
-      reps: parseInt(reps, 10),
-      rpe: rpe ? parseInt(rpe, 10) : undefined,
+      weight: parseFloat(data.weight),
+      reps: parseInt(data.reps, 10),
+      rpe: data.rpe ? parseInt(data.rpe, 10) : undefined,
     });
-
-    setWeight("");
-    setReps("");
-    setRpe("");
-    setErrors({});
+    reset({ weight: "", reps: "", rpe: "" });
   };
 
   return (
@@ -73,58 +66,58 @@ export const WorkoutSetForm: React.FC<WorkoutSetFormProps> = ({
         {exerciseName} - Set {setNumber}
       </Text>
 
-      <Input
-        label="Weight (lbs)"
-        placeholder="Enter weight"
-        value={weight}
-        onChangeText={(text) => {
-          setWeight(text);
-          if (errors.weight) {
-            const newErrors = { ...errors };
-            delete newErrors.weight;
-            setErrors(newErrors);
-          }
-        }}
-        error={errors.weight}
+      <Controller
+        control={control}
+        name="weight"
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <Input
+            label="Weight (lbs)"
+            placeholder="Enter weight"
+            value={value}
+            onChangeText={onChange}
+            error={error?.message}
+          />
+        )}
       />
 
-      <Input
-        label="Reps"
-        placeholder="Enter reps"
-        value={reps}
-        onChangeText={(text) => {
-          setReps(text);
-          if (errors.reps) {
-            const newErrors = { ...errors };
-            delete newErrors.reps;
-            setErrors(newErrors);
-          }
-        }}
-        error={errors.reps}
+      <Controller
+        control={control}
+        name="reps"
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <Input
+            label="Reps"
+            placeholder="Enter reps"
+            value={value}
+            onChangeText={onChange}
+            error={error?.message}
+          />
+        )}
       />
 
-      <Input
-        label="RPE (Optional)"
-        placeholder="Rate of perceived exertion (1-10)"
-        value={rpe}
-        onChangeText={setRpe}
+      <Controller
+        control={control}
+        name="rpe"
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <Input
+            label="RPE (Optional)"
+            placeholder="Rate of perceived exertion (1-10)"
+            value={value ?? ""}
+            onChangeText={onChange}
+            error={error?.message}
+          />
+        )}
       />
 
       <View style={styles.actionsRow}>
         <Button
           title="Cancel"
-          onPress={() => {
-            setWeight("");
-            setReps("");
-            setRpe("");
-            setErrors({});
-          }}
+          onPress={() => reset({ weight: "", reps: "", rpe: "" })}
           variant="secondary"
           size="sm"
         />
         <Button
           title="Save Set"
-          onPress={handleSubmit}
+          onPress={handleSubmit(handleFormSubmit)}
           variant="primary"
           size="sm"
         />

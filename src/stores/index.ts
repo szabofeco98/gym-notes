@@ -1,2 +1,2 @@
-// Placeholder - will add Zustand store exports later (UI state only)
-export {};
+export { useAuthStore } from "./authStore";
+export { useSessionStore } from "./sessionStore";

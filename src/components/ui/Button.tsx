@@ -1,4 +1,5 @@
 import { useTheme } from "@/src/theme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   Pressable,
@@ -6,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextStyle,
+  View,
   ViewStyle,
 } from "react-native";
 
@@ -17,6 +19,8 @@ interface ButtonProps {
   size?: "sm" | "md" | "lg";
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  icon?: string;
+  iconSize?: number;
 }
 
 /**
@@ -38,6 +42,8 @@ export const Button: React.FC<ButtonProps> = ({
   size = "md",
   style,
   textStyle,
+  icon,
+  iconSize = 20,
 }) => {
   const { colors } = useTheme();
 
@@ -64,7 +70,19 @@ export const Button: React.FC<ButtonProps> = ({
       onPress={onPress}
       disabled={disabled}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      {icon ? (
+        <View style={styles.row}>
+          <MaterialCommunityIcons
+            name={icon as any}
+            size={iconSize}
+            color="#FFFFFF"
+            style={styles.iconLeft}
+          />
+          <Text style={[styles.text, textStyle]}>{title}</Text>
+        </View>
+      ) : (
+        <Text style={[styles.text, textStyle]}>{title}</Text>
+      )}
     </Pressable>
   );
 };
@@ -96,5 +114,12 @@ const styles = StyleSheet.create({
   text: {
     color: "#FFFFFF",
     fontWeight: "600",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconLeft: {
+    marginRight: 8,
   },
 });

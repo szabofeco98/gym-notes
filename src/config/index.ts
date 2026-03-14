@@ -1,3 +1,2 @@
-export { firebaseApp, auth, db } from './firebase';
-export { queryClient } from './queryClient';
-
+export { account, client, databases, storage } from "./appwrite";
+export { queryClient } from "./queryClient";

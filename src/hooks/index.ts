@@ -1,2 +1,5 @@
-// Placeholder - will add TanStack Query and custom hook exports later
-export {};
+export { useCreatePlan } from "./useCreatePlan";
+export { useDeletePlan } from "./useDeletePlan";
+export { useGetPlans } from "./useGetPlans";
+export { useGetWorkoutHistory } from "./useGetWorkoutHistory";
+export { useSaveSession } from "./useSaveSession";
