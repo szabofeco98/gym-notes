@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export const useDeletePlan = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (planId: string) => planService.deletePlan(planId),
+    mutationFn: (plan: string) => planService.deletePlan(plan),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.plans() });
     },

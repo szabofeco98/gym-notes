@@ -60,7 +60,7 @@ export default function ProfileScreen() {
           />
           <View style={styles.stat}>
             <Text style={[styles.statValue, { color: colors.primary }]}>
-              {sessions?.reduce((acc, s) => acc + s.totalSets, 0) ?? 0}
+              {sessions?.length ?? 0}
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               Total Sets

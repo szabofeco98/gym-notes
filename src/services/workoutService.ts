@@ -15,26 +15,30 @@ export const workoutService = {
 
   saveSession: async (data: {
     userId: string;
-    planId?: string;
-    name: string;
-    startedAt: string;
+    dayPlan?: string;
+    date: string;
+    startTime?: string;
+    endTime?: string;
+    notes?: string;
+    completed?: boolean;
     sets: SessionSet[];
   }): Promise<WorkoutSession> => {
-    const completedAt = new Date().toISOString();
-
+    console.log("Saving session with data:", data);
     const session = await tablesDb.createRow({
       databaseId: DB_ID,
       tableId: COLLECTIONS.SESSIONS,
       rowId: ID.unique(),
       data: {
         userId: data.userId,
-        planId: data.planId ?? null,
-        name: data.name,
-        startedAt: data.startedAt,
-        completedAt,
-        totalSets: data.sets.length,
+        dayPlan: data.dayPlan ?? null,
+        date: data.date,
+        // startTime: data.startTime ?? null,
+        // endTime: data.endTime ?? null,
+        // notes: data.notes ?? null,
+        completed: data.completed ?? true,
       },
     });
+    console.log(data.sets);
 
     await Promise.all(
       data.sets.map((set) =>
@@ -43,14 +47,14 @@ export const workoutService = {
           tableId: COLLECTIONS.SETS,
           rowId: ID.unique(),
           data: {
-            sessionId: session.$id,
-            exerciseId: set.exerciseId,
-            exerciseName: set.exerciseName,
+            workoutSession: session.$id,
+            dayPlanExcercise: set.dayPlanExercise ?? null,
+            // exercise: set.exercise,
+            // exerciseName: set.exerciseName,
             setNumber: set.setNumber,
             weight: set.weight,
             reps: set.reps,
-            rpe: set.rpe ?? null,
-            completedAt,
+            comment: set.rpe ?? null,
           },
         }),
       ),

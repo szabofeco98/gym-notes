@@ -8,13 +8,19 @@ export const useSaveSession = () => {
   return useMutation({
     mutationFn: (data: {
       userId: string;
-      planId?: string;
-      name: string;
-      startedAt: string;
+      dayPlan?: string;
+      date: string;
+      startTime?: string;
+      endTime?: string;
+      notes?: string;
+      completed?: boolean;
       sets: SessionSet[];
     }) => workoutService.saveSession(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.workoutSessions() });
+    },
+    onError: (error) => {
+      console.error("Failed to save session:", error);
     },
   });
 };

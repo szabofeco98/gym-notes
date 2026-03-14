@@ -34,7 +34,6 @@ export default function RootLayout() {
     authService
       .getCurrentUser()
       .then((user) => {
-        console.log("[Appwrite] Current user:", user);
         setUser(user);
       })
       .catch((e) => {

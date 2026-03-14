@@ -34,8 +34,8 @@ export default function TodayScreen() {
 
   const alreadyAdded = new Set(activeSession?.exercises.map((e) => e.id));
 
-  const handleStartWorkout = (name: string, planId?: string) => {
-    startSession(name, [], planId);
+  const handleStartWorkout = (name: string, dayPlan?: string) => {
+    startSession(name, [], dayPlan);
     setPlanPickerVisible(false);
   };
 
@@ -48,8 +48,12 @@ export default function TodayScreen() {
     exercise: Exercise,
     setData: { setNumber: number; weight: number; reps: number; rpe?: number },
   ) => {
+    const dayPlanExercise = activeSession?.dayPlanExercises?.find(
+      (dpe) => dpe.exercise === exercise.id,
+    )?.$id;
     addSet({
-      exerciseId: exercise.id,
+      dayPlanExercise,
+      exercise: exercise.id,
       exerciseName: exercise.name,
       setNumber: setData.setNumber,
       weight: setData.weight,
@@ -69,9 +73,11 @@ export default function TodayScreen() {
           try {
             await saveSession({
               userId: user.$id,
-              planId: activeSession.planId,
-              name: activeSession.planName,
-              startedAt: activeSession.startedAt,
+              dayPlan: activeSession.dayPlan,
+              date: activeSession.startedAt.split("T")[0],
+              startTime: activeSession.startedAt,
+              endTime: new Date().toISOString(),
+              completed: true,
               sets: activeSession.sets,
             });
             clearSession();
@@ -185,7 +191,7 @@ export default function TodayScreen() {
 
           {activeSession.exercises.map((exercise) => {
             const exerciseSets = activeSession.sets.filter(
-              (s) => s.exerciseId === exercise.id,
+              (s) => s.exercise === exercise.id,
             );
             const isOpen = activeExerciseId === exercise.id;
 
@@ -210,11 +216,37 @@ export default function TodayScreen() {
                     >
                       {exercise.name}
                     </Text>
-                    <Text
-                      style={[styles.muscleGroup, { color: colors.secondary }]}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 6,
+                        alignItems: "center",
+                      }}
                     >
-                      {exercise.muscleGroup}
-                    </Text>
+                      <Text
+                        style={[
+                          styles.muscleGroup,
+                          { color: colors.secondary },
+                        ]}
+                      >
+                        {exercise.muscleGroup}
+                      </Text>
+                      {(() => {
+                        const target = activeSession.dayPlanExercises?.find(
+                          (dpe) => dpe.exercise === exercise.id,
+                        )?.targetSets;
+                        return target ? (
+                          <Text
+                            style={[
+                              styles.targetSets,
+                              { color: colors.textSecondary },
+                            ]}
+                          >
+                            · {target} sets
+                          </Text>
+                        ) : null;
+                      })()}
+                    </View>
                   </View>
                   <TouchableOpacity
                     onPress={() =>
@@ -363,6 +395,7 @@ const styles = StyleSheet.create({
   },
   exerciseName: { fontSize: 15, fontWeight: "600" },
   muscleGroup: { fontSize: 12, marginTop: 2 },
+  targetSets: { fontSize: 12 },
   logSetBtn: { fontSize: 13, fontWeight: "600" },
   setList: { borderTopWidth: 1, marginTop: 10, paddingTop: 8, gap: 4 },
   setRow: { fontSize: 13 },

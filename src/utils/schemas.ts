@@ -14,6 +14,44 @@ export const registerSchema = z.object({
     .max(256, "Password is too long"),
 });
 
+export const createDaySchema = z.object({
+  name: z
+    .string()
+    .min(1, "Day name is required")
+    .max(60, "Day name must be 60 characters or fewer"),
+});
+
+export type CreateDayFields = z.infer<typeof createDaySchema>;
+
+export const MUSCLE_GROUPS = [
+  "Chest",
+  "Back",
+  "Legs",
+  "Shoulders",
+  "Biceps",
+  "Triceps",
+  "Forearms",
+  "Abs",
+  "Core",
+  "Glutes",
+  "Calves",
+  "Cardio",
+] as const;
+
+export const createExerciseSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Exercise name is required")
+    .max(100, "Name must be 100 characters or fewer"),
+  muscleGroup: z.enum(MUSCLE_GROUPS, { error: "Select a muscle group" }),
+  description: z
+    .string()
+    .max(500, "Description must be 500 characters or fewer")
+    .optional(),
+});
+
+export type CreateExerciseFields = z.infer<typeof createExerciseSchema>;
+
 export const createPlanSchema = z.object({
   name: z
     .string()

@@ -56,22 +56,30 @@ export default function HistoryScreen() {
                 <Text
                   style={[styles.sessionName, { color: colors.textPrimary }]}
                 >
-                  {item.name}
+                  {item.date}
                 </Text>
                 <Text style={[styles.date, { color: colors.textSecondary }]}>
-                  {formatDate(item.startedAt)}
+                  {item.startTime
+                    ? formatDate(item.startTime)
+                    : formatDate(item.$createdAt)}
                 </Text>
               </View>
               <View style={styles.cardStats}>
                 <Text style={[styles.stat, { color: colors.primary }]}>
-                  {item.totalSets} sets
+                  {item.completed ? "Completed" : "In Progress"}
                 </Text>
-                <Text style={[styles.statDot, { color: colors.border }]}>
-                  •
-                </Text>
-                <Text style={[styles.stat, { color: colors.textSecondary }]}>
-                  {getDuration(item.startedAt, item.completedAt)}
-                </Text>
+                {item.startTime && item.endTime && (
+                  <>
+                    <Text style={[styles.statDot, { color: colors.border }]}>
+                      •
+                    </Text>
+                    <Text
+                      style={[styles.stat, { color: colors.textSecondary }]}
+                    >
+                      {getDuration(item.startTime, item.endTime)}
+                    </Text>
+                  </>
+                )}
               </View>
             </View>
           )}

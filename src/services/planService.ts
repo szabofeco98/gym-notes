@@ -27,11 +27,11 @@ export const planService = {
     return row as unknown as Plan;
   },
 
-  deletePlan: async (planId: string): Promise<void> => {
+  deletePlan: async (plan: string): Promise<void> => {
     await tablesDb.deleteRow({
       databaseId: DB_ID,
       tableId: COLLECTIONS.PLANS,
-      rowId: planId,
+      rowId: plan,
     });
   },
 };

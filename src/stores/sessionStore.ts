@@ -7,7 +7,8 @@ interface SessionState {
   startSession: (
     planName: string,
     exercises?: Exercise[],
-    planId?: string,
+    dayPlan?: string,
+    dayPlanExercises?: import("@/src/types").DayPlanExercise[],
   ) => void;
   addExercise: (exercise: Exercise) => void;
   addSet: (set: SessionSet) => void;
@@ -18,12 +19,13 @@ export const useSessionStore = create<SessionState>()(
   immer((set) => ({
     activeSession: null,
 
-    startSession: (planName, exercises = [], planId) =>
+    startSession: (planName, exercises = [], dayPlan, dayPlanExercises) =>
       set((state) => {
         state.activeSession = {
-          planId,
+          dayPlan,
           planName,
           exercises,
+          dayPlanExercises,
           sets: [],
           startedAt: new Date().toISOString(),
         };

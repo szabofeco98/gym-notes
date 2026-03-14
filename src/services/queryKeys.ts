@@ -1,18 +1,20 @@
 export const queryKeys = {
-  all: ['plans'] as const,
-  plans: () => [...queryKeys.all, 'plans'] as const,
-  plansDetail: () => [...queryKeys.plans(), 'detail'] as const,
-  planDetail: (id: string) => [...queryKeys.plansDetail(), id] as const,
+  // Plans
+  plans: () => ["plans"] as const,
+  planDetail: (id: string) => ["plans", id] as const,
 
-  workouts: () => ['workouts'] as const,
-  workoutSessions: () => [...queryKeys.workouts(), 'sessions'] as const,
-  workoutSessionDetail: (id: string) => [...queryKeys.workoutSessions(), id] as const,
+  // Day plans (within a plan)
+  dayPlans: (plan: string) => ["dayPlans", plan] as const,
 
-  exercises: () => ['exercises'] as const,
-  exercisesByMuscleGroup: (muscleGroup: string) => [
-    ...queryKeys.exercises(),
-    'byMuscleGroup',
-    muscleGroup,
-  ] as const,
+  // Day plan exercises (within a day plan)
+  dayPlanExercises: (dayPlan: string) => ["dayPlanExercises", dayPlan] as const,
+
+  // Exercises (master list)
+  exercises: () => ["exercises"] as const,
+  exercisesByMuscleGroup: (muscleGroup: string) =>
+    ["exercises", "byMuscleGroup", muscleGroup] as const,
+
+  // Workout sessions
+  workoutSessions: () => ["workoutSessions"] as const,
+  workoutSessionDetail: (id: string) => ["workoutSessions", id] as const,
 };
-
